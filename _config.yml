@@ -1,27 +1,26 @@
 # Setup
-title:        vsoch/search
-baseurl:      "/search"
-repository:    vsoch/search
+title: sdhutchins/repository-search
+baseurl: "/repository-search"
+repository: sdhutchins/repository-search
 
 # Scrolltop color
 scrolltop_color: "#fd1268"
 
 # Collections
 collections:
-    issues:
-      output: false
-      permalink: /:collection/:title/
+  issues:
+    output: false
+    permalink: /:collection/:title/
 
 # Defaults
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
       type: "pages"
     values:
       layout: "default"
 
-#Others
+# Others
 markdown: kramdown
 
 plugins:
