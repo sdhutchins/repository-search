@@ -1,4 +1,4 @@
-# Search
+# Repository Search
 
 This is an interface that uses GitHub Pages and the API that is provided there to
 render a searchable interface of repositories for an individual or organization.

@@ -1,29 +1,48 @@
-name: render-weekly
+name: Deploy Jekyll site to Pages
 
 on:
+  push:
+    branches:
+      - master
   schedule:
-    # Weekly on Thursday
-    - cron: 0 0 * * 4
+    # Rebuild weekly on Thursday to refresh repository data.
+    - cron: "0 0 * * 4"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  re-render:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Push empty commit to trigger site render
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: "master"
-        run: |
-          echo "GitHub Actor: ${GITHUB_ACTOR}"
-          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git branch
+      - name: Checkout
+        uses: actions/checkout@v4
 
-          git checkout "${BRANCH}"
-          git pull origin "${BRANCH}"
-          git branch
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@users.noreply.github.com"
-          git commit --allow-empty -m "Automated push of empty commit to re-render site $(date '+%Y-%m-%d')" || exit 0
-          git push origin "${BRANCH}"
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
