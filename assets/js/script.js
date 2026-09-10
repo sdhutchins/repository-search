@@ -20,6 +20,8 @@
   var resultLabel = document.getElementById("result-label");
   var downloadButton = document.getElementById("download-csv");
   var emptyState = document.getElementById("empty-state");
+  var backToTopButton = document.getElementById("back-to-top");
+  var mainContent = document.getElementById("main-content");
 
   if (!controls || !cardContainer || !tableBody) {
     return;
@@ -231,6 +233,23 @@
     updateRepositories();
   }
 
+  function updateBackToTopButton() {
+    backToTopButton.hidden = window.scrollY < 600;
+  }
+
+  function scrollBackToTop() {
+    var prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    // Move focus before hiding the control so keyboard users keep their place.
+    mainContent.focus({ preventScroll: true });
+    window.scrollTo({
+      top: 0,
+      behavior: prefersReducedMotion ? "auto" : "smooth"
+    });
+  }
+
   controls.addEventListener("submit", function (event) {
     event.preventDefault();
   });
@@ -239,6 +258,8 @@
   languageFilter.addEventListener("change", updateRepositories);
   licenseFilter.addEventListener("change", updateRepositories);
   downloadButton.addEventListener("click", downloadVisibleRepositories);
+  backToTopButton.addEventListener("click", scrollBackToTop);
+  window.addEventListener("scroll", updateBackToTopButton, { passive: true });
 
   sortSelect.addEventListener("change", function () {
     var sortParts = sortSelect.value.split("-");
@@ -271,4 +292,5 @@
   });
 
   updateRepositories();
+  updateBackToTopButton();
 })();
