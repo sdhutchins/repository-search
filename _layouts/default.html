@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <body>  
+<html lang="en">
   {% include head.html %}
-  {% include fork-ribbon.html %}
-  {% include sidebar.html %}
-  {{ content }}
-  {% include scrolltop.html %}
-  {% include page-footer.html %}
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-identity" href="{{ site.baseurl }}/" aria-label="Repository Search home">
+          <span class="site-identity__initials">SDH</span>
+          <span class="site-identity__divider" aria-hidden="true"></span>
+          <span class="site-identity__name">Repository Search</span>
+        </a>
+      </div>
+    </header>
+
+    <main id="main-content" class="dashboard">
+      {{ content }}
+    </main>
+
+    {% include page-footer.html %}
   </body>
 </html>
