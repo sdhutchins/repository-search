@@ -79,7 +79,7 @@ excluded_in_search: true
       <article
         class="repository-card"
         data-repository-id="{{ repo.id }}"
-        data-search="{{ repo.name | escape }} {{ repo.description | escape }} {{ repo.language | escape }} {{ repo.license.spdx_id | escape }}"
+        data-search="{{ repo.name | escape }} {{ repo.description | escape }} {{ repo.language | escape }} {{ repo.license.spdx_id | escape }}{% if repo.fork %} fork{% endif %}"
         data-name="{{ repo.name | downcase | escape }}"
         data-language="{{ repo.language | escape }}"
         data-license="{{ repo.license.spdx_id | escape }}"
@@ -93,6 +93,7 @@ excluded_in_search: true
             <h2>
               <a href="{{ repo.html_url }}" target="_blank" rel="noopener noreferrer">{{ repo.name }}</a>
             </h2>
+            {% if repo.fork %}<span class="repository-fork-badge">Fork</span>{% endif %}
           </div>
           <p class="repository-description">
             {% if repo.description %}{{ repo.description }}{% else %}No description provided.{% endif %}
@@ -149,7 +150,7 @@ excluded_in_search: true
             <tr
               class="repository-row"
               data-repository-id="{{ repo.id }}"
-              data-search="{{ repo.name | escape }} {{ repo.description | escape }} {{ repo.language | escape }} {{ repo.license.spdx_id | escape }}"
+              data-search="{{ repo.name | escape }} {{ repo.description | escape }} {{ repo.language | escape }} {{ repo.license.spdx_id | escape }}{% if repo.fork %} fork{% endif %}"
               data-name="{{ repo.name | downcase | escape }}"
               data-language="{{ repo.language | escape }}"
               data-license="{{ repo.license.spdx_id | escape }}"
@@ -160,6 +161,7 @@ excluded_in_search: true
             >
               <th scope="row">
                 <a href="{{ repo.html_url }}" target="_blank" rel="noopener noreferrer">{{ repo.name }}</a>
+                {% if repo.fork %}<span class="repository-fork-badge">Fork</span>{% endif %}
                 <span class="repository-table-description">{% if repo.description %}{{ repo.description }}{% else %}No description provided.{% endif %}</span>
               </th>
               <td>{{ repo.language | default: "—" }}</td>

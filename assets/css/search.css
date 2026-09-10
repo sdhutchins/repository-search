@@ -315,6 +315,29 @@ a:hover {
   border-bottom-style: solid;
 }
 
+.repository-fork-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 5px;
+  padding: 1px 6px;
+  border-radius: var(--radius-control);
+  background: var(--plum-100);
+  color: var(--plum-800);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  line-height: 1.5;
+  text-transform: none;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.repository-card__heading .repository-fork-badge {
+  flex: none;
+  margin: 2px 0 0;
+}
+
 .repository-description {
   margin: 10px 0 0;
   color: var(--ink-700);
@@ -363,6 +386,13 @@ a:hover {
   margin-right: 7px;
   border-radius: 999px;
   background: var(--plum-500);
+}
+
+.repository-table .repository-fork-badge {
+  margin-left: 4px;
+  padding: 0 5px;
+  font-size: 11px;
+  line-height: 1.6;
 }
 
 .repository-table-frame {
