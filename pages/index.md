@@ -68,10 +68,18 @@ excluded_in_search: true
   </div>
 </form>
 
-<p class="results-summary" aria-live="polite">
-  <span id="result-count">{{ repositories | size }}</span>
-  <span id="result-label">repositories</span>
-</p>
+<div class="results-toolbar">
+  <p class="results-summary" aria-live="polite">
+    <span id="result-count">{{ repositories | size }}</span>
+    <span id="result-label">repositories</span>
+  </p>
+  <button class="download-button" id="download-csv" type="button">
+    <svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16">
+      <path d="M10 3v9m0 0 3.5-3.5M10 12 6.5 8.5M4 15.5h12"></path>
+    </svg>
+    Download CSV
+  </button>
+</div>
 
 <section id="card-view" aria-label="Repository cards">
   <div class="repository-grid" id="repository-grid">
@@ -81,6 +89,10 @@ excluded_in_search: true
         data-repository-id="{{ repo.id }}"
         data-search="{{ repo.name | escape }} {{ repo.description | escape }} {{ repo.language | escape }} {{ repo.license.spdx_id | escape }}{% if repo.fork %} fork{% endif %}"
         data-name="{{ repo.name | downcase | escape }}"
+        data-export-name="{{ repo.name | escape }}"
+        data-description="{{ repo.description | escape }}"
+        data-is-fork="{% if repo.fork %}true{% else %}false{% endif %}"
+        data-url="{{ repo.html_url | escape }}"
         data-language="{{ repo.language | escape }}"
         data-license="{{ repo.license.spdx_id | escape }}"
         data-updated="{{ repo.updated_at }}"

@@ -18,6 +18,7 @@
   var tableBody = document.getElementById("repository-table-body");
   var resultCount = document.getElementById("result-count");
   var resultLabel = document.getElementById("result-label");
+  var downloadButton = document.getElementById("download-csv");
   var emptyState = document.getElementById("empty-state");
 
   if (!controls || !cardContainer || !tableBody) {
@@ -102,6 +103,75 @@
     );
   }
 
+  function csvCell(value) {
+    var stringValue = value === undefined || value === null ? "" : String(value);
+
+    // Quoting every cell safely preserves commas, quotes, and line breaks.
+    return '"' + stringValue.replace(/"/g, '""') + '"';
+  }
+
+  function localDateStamp() {
+    var today = new Date();
+    var month = String(today.getMonth() + 1).padStart(2, "0");
+    var day = String(today.getDate()).padStart(2, "0");
+
+    return today.getFullYear() + "-" + month + "-" + day;
+  }
+
+  function downloadVisibleRepositories() {
+    var visibleRepositories = repositories
+      .slice()
+      .sort(compareRepositories)
+      .filter(repositoryMatches);
+    var headers = [
+      "name",
+      "description",
+      "is_fork",
+      "language",
+      "license",
+      "updated_at",
+      "stars",
+      "forks",
+      "open_issues",
+      "url"
+    ];
+    var csvRows = visibleRepositories.map(function (repository) {
+      var repositoryData = repository.card.dataset;
+
+      return [
+        repositoryData.exportName,
+        repositoryData.description,
+        repositoryData.isFork,
+        repositoryData.language,
+        repositoryData.license,
+        repositoryData.updated,
+        repositoryData.stars,
+        repositoryData.forks,
+        repositoryData.issues,
+        repositoryData.url
+      ];
+    });
+    var csvContent = [headers].concat(csvRows).map(function (row) {
+      return row.map(csvCell).join(",");
+    }).join("\r\n");
+    var csvBlob = new Blob(["\ufeff", csvContent], {
+      type: "text/csv;charset=utf-8"
+    });
+    var downloadUrl = URL.createObjectURL(csvBlob);
+    var downloadLink = document.createElement("a");
+
+    downloadLink.href = downloadUrl;
+    downloadLink.download = "repositories-" + localDateStamp() + ".csv";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+
+    // Revoke after the click is dispatched so the browser can read the blob.
+    window.setTimeout(function () {
+      URL.revokeObjectURL(downloadUrl);
+    }, 0);
+  }
+
   function updateSortControls() {
     tableSortButtons.forEach(function (button) {
       var isActive = button.dataset.sort === state.sortKey;
@@ -144,6 +214,7 @@
 
     resultCount.textContent = visibleCount;
     resultLabel.textContent = visibleCount === 1 ? "repository" : "repositories";
+    downloadButton.disabled = visibleCount === 0;
     emptyState.hidden = visibleCount !== 0;
     cardView.hidden = state.view !== "cards" || visibleCount === 0;
     tableView.hidden = state.view !== "table" || visibleCount === 0;
@@ -167,6 +238,7 @@
   searchInput.addEventListener("input", updateRepositories);
   languageFilter.addEventListener("change", updateRepositories);
   licenseFilter.addEventListener("change", updateRepositories);
+  downloadButton.addEventListener("click", downloadVisibleRepositories);
 
   sortSelect.addEventListener("change", function () {
     var sortParts = sortSelect.value.split("-");
